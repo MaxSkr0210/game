@@ -28,6 +28,18 @@ public class GameRoot : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void AutoBoot()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        BootIfNeeded();
+    }
+
+    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BootIfNeeded();
+    }
+
+    static void BootIfNeeded()
+    {
         if (Find<GameRoot>() != null) return;
         var go = new GameObject("GameRoot");
         go.AddComponent<GameRoot>();
@@ -35,7 +47,7 @@ public class GameRoot : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
@@ -46,6 +58,33 @@ public class GameRoot : MonoBehaviour
         Physics2D.queriesHitTriggers = true;
         Physics2D.queriesStartInColliders = false;
         Application.targetFrameRate = 60;
+
+        if (GetComponent<AudioSource>() == null)
+        {
+            Audio = gameObject.AddComponent<AudioSource>();
+            Audio.playOnAwake = false;
+            Audio.spatialBlend = 0f;
+        }
+        else
+        {
+            Audio = GetComponent<AudioSource>();
+        }
+
+        BuildLevel();
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+            Audio = null;
+            Player = null;
+        }
+    }
+
+    void BuildLevel()
+    {
         Time.timeScale = 1f;
         State = RunState.Playing;
         Combo = 0;
@@ -54,10 +93,7 @@ public class GameRoot : MonoBehaviour
         Flash = 0f;
         HitPause = 0f;
         _comboPeak = 0;
-
-        Audio = gameObject.AddComponent<AudioSource>();
-        Audio.playOnAwake = false;
-        Audio.spatialBlend = 0f;
+        Cursor.visible = false;
 
         _world = new GameObject("World").transform;
         _world.SetParent(transform, false);
@@ -72,7 +108,8 @@ public class GameRoot : MonoBehaviour
             var camGo = new GameObject("Main Camera");
             cam = camGo.AddComponent<Camera>();
             camGo.tag = "MainCamera";
-            camGo.AddComponent<AudioListener>();
+            if (camGo.GetComponent<AudioListener>() == null)
+                camGo.AddComponent<AudioListener>();
         }
 
         cam.orthographic = true;
@@ -86,8 +123,6 @@ public class GameRoot : MonoBehaviour
         var view = cam.gameObject.GetComponent<GameView>();
         if (view == null) view = cam.gameObject.AddComponent<GameView>();
         view.Bind(Player);
-
-        Cursor.visible = false;
     }
 
     void Update()
@@ -154,9 +189,40 @@ public class GameRoot : MonoBehaviour
     public static void Restart()
     {
         Time.timeScale = 1f;
-        Cursor.visible = true;
-        var scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        Cursor.visible = false;
+        if (Instance == null)
+        {
+            BootIfNeeded();
+            return;
+        }
+
+        Instance.StopAllCoroutines();
+        Instance.ClearLevel();
+        Instance.BuildLevel();
+    }
+
+    void ClearLevel()
+    {
+        for (var i = transform.childCount - 1; i >= 0; i--)
+            DestroyImmediate(transform.GetChild(i).gameObject);
+
+        foreach (var bullet in FindAll<Bullet>())
+            if (bullet != null) DestroyImmediate(bullet.gameObject);
+        foreach (var drop in FindAll<GroundWeapon>())
+            if (drop != null) DestroyImmediate(drop.gameObject);
+
+        var cam = Camera.main;
+        if (cam != null)
+        {
+            var view = cam.GetComponent<GameView>();
+            if (view != null) DestroyImmediate(view);
+        }
+
+        var crosshair = GameObject.Find("Crosshair");
+        if (crosshair != null) DestroyImmediate(crosshair);
+
+        Player = null;
+        _world = null;
     }
 
     IEnumerator ShowCursorSoon()

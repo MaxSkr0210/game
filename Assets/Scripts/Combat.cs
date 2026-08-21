@@ -215,7 +215,7 @@ public class Bullet : MonoBehaviour
 
     public static void Spawn(Vector2 pos, Vector2 dir, float speed, bool fromPlayer, Color color)
     {
-        var go = Art.Body("Bullet", pos);
+        var go = Art.Body("Bullet", pos, GameRoot.Instance != null ? GameRoot.Instance.transform : null);
         go.transform.right = dir;
         Art.MakeSprite("Sprite", go.transform, Art.Square,
             color.a <= 0f ? Art.Bullet : color, new Vector3(0.22f, 0.08f, 1f), 25);
@@ -266,7 +266,7 @@ public class GroundWeapon : MonoBehaviour
     public static GroundWeapon Spawn(Vector2 pos, WeaponId id, int ammo)
     {
         var stats = Catalog.Of(id);
-        var go = Art.Body("Pickup-" + stats.name, pos);
+        var go = Art.Body("Pickup-" + stats.name, pos, GameRoot.Instance != null ? GameRoot.Instance.transform : null);
         Art.MakeSprite("Sprite", go.transform, Art.Square, stats.color, new Vector3(0.55f, 0.2f, 1f), 7);
         go.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 

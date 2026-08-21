@@ -9,11 +9,9 @@ public class GameView : MonoBehaviour
     public void Bind(Transform player)
     {
         _player = player;
-        if (_crosshair == null)
-        {
-            var sr = Art.MakeSprite("Crosshair", null, Art.Square, Art.Crosshair, new Vector3(0.16f, 0.16f, 1f), 50);
-            _crosshair = sr.transform;
-        }
+        _crosshair = null;
+        var sr = Art.MakeSprite("Crosshair", null, Art.Square, Art.Crosshair, new Vector3(0.16f, 0.16f, 1f), 50);
+        _crosshair = sr.transform;
     }
 
     void LateUpdate()
