@@ -124,7 +124,7 @@ public class WeaponUser : MonoBehaviour
         for (var i = 0; i < shots; i++)
         {
             var angle = Random.Range(-stats.spread, stats.spread);
-            var d = Quaternion.Euler(0f, 0f, angle) * dir;
+            var d = (Vector2)(Quaternion.Euler(0f, 0f, angle) * (Vector3)dir);
             Bullet.Spawn(origin + d * 0.45f, d, stats.bulletSpeed, isPlayer, stats.color);
         }
 
@@ -217,7 +217,7 @@ public class Bullet : MonoBehaviour
     {
         var go = Art.Body("Bullet", pos);
         go.transform.right = dir;
-        Art.Sprite("Sprite", go.transform, Art.Square,
+        Art.MakeSprite("Sprite", go.transform, Art.Square,
             color.a <= 0f ? Art.Bullet : color, new Vector3(0.22f, 0.08f, 1f), 25);
 
         var col = go.AddComponent<CircleCollider2D>();
@@ -267,7 +267,7 @@ public class GroundWeapon : MonoBehaviour
     {
         var stats = Catalog.Of(id);
         var go = Art.Body("Pickup-" + stats.name, pos);
-        Art.Sprite("Sprite", go.transform, Art.Square, stats.color, new Vector3(0.55f, 0.2f, 1f), 7);
+        Art.MakeSprite("Sprite", go.transform, Art.Square, stats.color, new Vector3(0.55f, 0.2f, 1f), 7);
         go.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 
         var col = go.AddComponent<CircleCollider2D>();

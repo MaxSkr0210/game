@@ -47,7 +47,7 @@ public static class Art
         return c;
     }
 
-    public static SpriteRenderer Sprite(string name, Transform parent, Sprite sprite, Color color, Vector3 scale, int order)
+    public static SpriteRenderer MakeSprite(string name, Transform parent, Sprite sprite, Color color, Vector3 scale, int order)
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
@@ -76,7 +76,7 @@ public static class Art
         for (var i = 0; i < pixels.Length; i++) pixels[i] = Color.white;
         tex.SetPixels(pixels);
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0.5f), 8f);
+        return UnityEngine.Sprite.Create(tex, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0.5f), 8f);
     }
 
     static Sprite MakeCircle(int size)
@@ -98,7 +98,7 @@ public static class Art
         }
 
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+        return UnityEngine.Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
     }
 }
 

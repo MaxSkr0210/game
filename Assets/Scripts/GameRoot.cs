@@ -167,7 +167,9 @@ public class GameRoot : MonoBehaviour
 
     public static T Find<T>() where T : Object
     {
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
+        return Object.FindAnyObjectByType<T>();
+#elif UNITY_2023_1_OR_NEWER
         return Object.FindFirstObjectByType<T>();
 #else
         return Object.FindObjectOfType<T>();
@@ -176,7 +178,9 @@ public class GameRoot : MonoBehaviour
 
     public static T[] FindAll<T>() where T : Object
     {
-#if UNITY_2023_1_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
+        return Object.FindObjectsByType<T>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+#elif UNITY_2023_1_OR_NEWER
         return Object.FindObjectsByType<T>(FindObjectsSortMode.None);
 #else
         return Object.FindObjectsOfType<T>();

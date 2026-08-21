@@ -68,7 +68,7 @@ public static class LevelBuilder
             {
                 if ((x + y) % 2 == 0 && Map[y][x] != '#')
                 {
-                    var speckle = Art.Sprite("Tile", root, Art.Square, Art.FloorAlt, new Vector3(Tile, Tile, 1f), 1);
+                    var speckle = Art.MakeSprite("Tile", root, Art.Square, Art.FloorAlt, new Vector3(Tile, Tile, 1f), 1);
                     speckle.transform.position = World(x, y, h);
                 }
             }
@@ -152,7 +152,7 @@ public static class LevelBuilder
         box.size = Vector2.one;
         go.AddComponent<LosBlock>();
 
-        var trim = Art.Sprite("Trim", go.transform, Art.Square, (x + y) % 3 == 0 ? Art.Neon : Art.Hot,
+        var trim = Art.MakeSprite("Trim", go.transform, Art.Square, (x + y) % 3 == 0 ? Art.Neon : Art.Hot,
             new Vector3(1f, 0.08f, 1f), 9);
         trim.transform.localPosition = new Vector3(0f, 0.46f, 0f);
         var c = trim.color;
@@ -188,13 +188,13 @@ public static class LevelBuilder
         var weapons = go.AddComponent<WeaponUser>();
         weapons.isPlayer = true;
 
-        Art.Sprite("Body", go.transform, Art.Circle, Art.PlayerBody, Vector3.one * 0.86f, 20);
-        Art.Sprite("Mask", go.transform, Art.Circle, Art.PlayerMask, Vector3.one * 0.52f, 21)
+        Art.MakeSprite("Body", go.transform, Art.Circle, Art.PlayerBody, Vector3.one * 0.86f, 20);
+        Art.MakeSprite("Mask", go.transform, Art.Circle, Art.PlayerMask, Vector3.one * 0.52f, 21)
             .transform.localPosition = new Vector3(0f, 0.06f, 0f);
-        Art.Sprite("Visor", go.transform, Art.Square, Art.EnemyVisor, new Vector3(0.42f, 0.1f, 1f), 22)
+        Art.MakeSprite("Visor", go.transform, Art.Square, Art.EnemyVisor, new Vector3(0.42f, 0.1f, 1f), 22)
             .transform.localPosition = new Vector3(0f, 0.1f, 0f);
 
-        var gun = Art.Sprite("Gun", go.transform, Art.Square, Art.Hot, new Vector3(0.16f, 0.46f, 1f), 23);
+        var gun = Art.MakeSprite("Gun", go.transform, Art.Square, Art.Hot, new Vector3(0.16f, 0.46f, 1f), 23);
         gun.transform.localPosition = new Vector3(0.28f, 0.34f, 0f);
         weapons.gunView = gun;
         weapons.muzzle = gun.transform;
@@ -220,11 +220,11 @@ public static class LevelBuilder
         weapons.Equip(weapon, Catalog.Of(weapon).ammo);
 
         var bodyColor = weapon == WeaponId.Knife ? Art.EnemyKnife : Art.Enemy;
-        Art.Sprite("Body", go.transform, Art.Circle, bodyColor, Vector3.one * 0.86f, 18);
-        Art.Sprite("Visor", go.transform, Art.Square, Art.EnemyVisor, new Vector3(0.4f, 0.12f, 1f), 19)
+        Art.MakeSprite("Body", go.transform, Art.Circle, bodyColor, Vector3.one * 0.86f, 18);
+        Art.MakeSprite("Visor", go.transform, Art.Square, Art.EnemyVisor, new Vector3(0.4f, 0.12f, 1f), 19)
             .transform.localPosition = new Vector3(0f, 0.12f, 0f);
 
-        var gun = Art.Sprite("Gun", go.transform, Art.Square, Color.Lerp(bodyColor, Color.black, 0.35f),
+        var gun = Art.MakeSprite("Gun", go.transform, Art.Square, Color.Lerp(bodyColor, Color.black, 0.35f),
             new Vector3(0.14f, 0.42f, 1f), 19);
         gun.transform.localPosition = new Vector3(0.26f, 0.32f, 0f);
         weapons.gunView = gun;
